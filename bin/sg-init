@@ -26,14 +26,7 @@ program
  */
 
 program.on('--help', () => {
-  console.log('  Examples:')
-  console.log()
-  console.log(chalk.gray('    # create a new bff project with an bff-sample template (通过BFF模板创建一个bff-sample的项目)'))
-  console.log('    $ mx-app init bff my-project')
-  console.log()
-  console.log(chalk.gray('    # create a new react-webapp project with an react-webapp-sample template (通过react-webapp模板创建一个react-webapp-sample的项目)'))
-  console.log('    $ mx-app init webapp my-project')
-  console.log()
+  console.log('sg init [reponame]')
 })
 
 /**
@@ -56,7 +49,7 @@ const inPlace = !rawName || rawName === '.'
 const name = inPlace ? path.relative('../', process.cwd()) : rawName
 const to = path.resolve(rawName || '.')
 
-const tmp = path.join(home, '.school-templates', template.replace(/[\/:]/g, '-'))
+const tmp = path.join(home, '.fm-templates', template.replace(/[\/:]/g, '-'))
 
 /**
  * Padding.
@@ -95,7 +88,7 @@ function run () {
       console.error('Local template "%s" not found.', template)
     }
   } else {
-    const officialTemplate = 'gitlab:gitlab.gz.cvte.cn:seewo_dove/schoolweb/' + template
+    const officialTemplate = 'direct:https://gitee.com/fujinxiang/' + template +'.git'
     downloadAndGenerate(officialTemplate)
   }
 }
