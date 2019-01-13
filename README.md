@@ -2,5 +2,5 @@
 
 ### 安装
 ``` shell
-npm -g install @fm/cli
+npm -g install fm-cli
 ```
