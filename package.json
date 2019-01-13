@@ -1,6 +1,6 @@
 {
   "name": "fm-cli",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A simple CLI By Fuma.",
   "preferGlobal": true,
   "bin": {
@@ -11,7 +11,8 @@
     "url": "git+https://github.com/fujinxiang/cli"
   },
   "keywords": [
-    "school",
+    "node template",
+    "gitee",
     "cli"
   ],
   "author": "FuMa",
