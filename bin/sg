@@ -1,0 +1,16 @@
+#!/usr/bin/env node
+
+const program = require('commander')
+const chalk = require('chalk')
+const version = require('../package').version
+
+const example = `${chalk.yellow('使用示例:')}\n${chalk.gray('# 查看可创建模板')}\n$ sg list\n\n${chalk.gray('# 基于模板 node-ejs 创建项目')}\n$ sg init node-ejs myproject`
+
+program
+  .version(version, '-v, --version')
+  .description(example)
+  .usage('<command> [options]')
+  .command('list', 'list available official templates')
+  .command('init', 'generate a new project from a template')
+
+program.parse(process.argv)

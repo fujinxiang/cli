@@ -1,0 +1,128 @@
+#!/usr/bin/env node
+
+const download = require('download-git-repo')
+const program = require('commander')
+const fs = require('fs-extra')
+const exists = require('fs').existsSync
+const path = require('path')
+const ora = require('ora')
+const home = require('user-home')
+const chalk = require('chalk')
+const inquirer = require('inquirer')
+const rm = require('rimraf').sync
+const localPath = require('../lib/local-path')
+const isLocalPath = localPath.isLocalPath
+const getTemplatePath = localPath.getTemplatePath
+
+/**
+ * Usage.
+ */
+
+program
+  .usage('<template-name> [project-name]')
+
+/**
+ * Help.
+ */
+
+program.on('--help', () => {
+  console.log('  Examples:')
+  console.log()
+  console.log(chalk.gray('    # create a new bff project with an bff-sample template (通过BFF模板创建一个bff-sample的项目)'))
+  console.log('    $ mx-app init bff my-project')
+  console.log()
+  console.log(chalk.gray('    # create a new react-webapp project with an react-webapp-sample template (通过react-webapp模板创建一个react-webapp-sample的项目)'))
+  console.log('    $ mx-app init webapp my-project')
+  console.log()
+})
+
+/**
+ * Help.
+ */
+
+function help () {
+  program.parse(process.argv)
+  if (program.args.length < 1) return program.help()
+}
+help()
+
+/**
+ * Settings.
+ */
+
+const template = program.args[0]
+const rawName = program.args[1] || program.args[0]
+const inPlace = !rawName || rawName === '.'
+const name = inPlace ? path.relative('../', process.cwd()) : rawName
+const to = path.resolve(rawName || '.')
+
+const tmp = path.join(home, '.school-templates', template.replace(/[\/:]/g, '-'))
+
+/**
+ * Padding.
+ */
+
+console.log()
+process.on('exit', () => {
+  console.log()
+})
+
+if (exists(to)) {
+  inquirer.prompt([{
+    type: 'confirm',
+    message: `${to} exists. Continue?`,
+    name: 'ok'
+  }]).then(answers => {
+    if (answers.ok) {
+      run()
+    }
+  }).catch(console.error)
+} else {
+  run()
+}
+
+/**
+ * Check, download and generate the project.
+ */
+
+function run () {
+  // check if template is local
+  if (isLocalPath(template)) {
+    const templatePath = getTemplatePath(template)
+    if (exists(templatePath)) {
+      generate(name, templatePath, to)
+    } else {
+      console.error('Local template "%s" not found.', template)
+    }
+  } else {
+    const officialTemplate = 'gitlab:gitlab.gz.cvte.cn:seewo_dove/schoolweb/' + template
+    downloadAndGenerate(officialTemplate)
+  }
+}
+
+/**
+ * Download a generate from a template repo.
+ *
+ * @param {String} template
+ */
+
+function downloadAndGenerate (template) {
+  const spinner = ora('downloading template (正在下载模板)')
+  spinner.start()
+  // Remove if local template exists
+  if (exists(tmp)) rm(tmp)
+  download(template, tmp, { clone: true }, err => {
+    spinner.stop()
+    if (err) console.error('Failed to download repo ' + template + ': ' + err.message.trim())
+    generate(name, tmp, to)
+  })
+}
+
+function generate (name, from, to) {
+  fs.moveSync(from, to)
+  const pkg = path.join(to, 'package.json')
+  const content = fs.readJsonSync(pkg)
+  content.name = name
+  fs.writeJsonSync(pkg, content, { spaces: 2 })
+  console.log(chalk.cyan(`${name} is created`))
+}
