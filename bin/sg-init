@@ -6,6 +6,7 @@ const fs = require('fs-extra')
 const exists = require('fs').existsSync
 const path = require('path')
 const ora = require('ora')
+const shell = require('shelljs')
 const home = require('user-home')
 const chalk = require('chalk')
 const inquirer = require('inquirer')
@@ -50,10 +51,6 @@ const name = inPlace ? path.relative('../', process.cwd()) : rawName
 const to = path.resolve(rawName || '.')
 
 const tmp = path.join(home, '.fm-templates', template.replace(/[\/:]/g, '-'))
-
-/**
- * Padding.
- */
 
 console.log()
 process.on('exit', () => {
@@ -117,5 +114,12 @@ function generate (name, from, to) {
   const content = fs.readJsonSync(pkg)
   content.name = name
   fs.writeJsonSync(pkg, content, { spaces: 2 })
-  console.log(chalk.cyan(`${name} is created`))
+
+  shell.cd(to);
+  shell.exec('git init')
+  shell.exec('git add .')
+  shell.exec('git commit -m "init"')
+
+  console.log(chalk.cyan(`created at ${name} , you can add repo remote like:`))
+  console.log(chalk.yellow(`git remote add origin [url]`))
 }
