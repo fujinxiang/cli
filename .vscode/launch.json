@@ -8,8 +8,8 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
-            "program": "${workspaceFolder}/bin/sg-list",
-            "args": ["node-ejs"]
+            "program": "${workspaceFolder}/bin/sg-init",
+            "args": ["D:\\Test\\node-ejs"]
         }
     ]
 }
