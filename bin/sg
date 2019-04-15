@@ -12,5 +12,6 @@ program
   .usage('<command> [options]')
   .command('list', 'list available official templates')
   .command('init', 'generate a new project from a template')
+  .command('blog', 'update my blog')
 
 program.parse(process.argv)

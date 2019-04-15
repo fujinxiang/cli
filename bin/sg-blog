@@ -1,0 +1,6 @@
+#!/usr/bin/env node
+const shell = require('shelljs')
+
+shell.cd('#blog');
+shell.exec('hexo g')
+shell.exec('hexo d')
