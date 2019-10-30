@@ -4,3 +4,4 @@ const shell = require('shelljs')
 shell.cd('#blog');
 shell.exec('hexo g')
 shell.exec('hexo d')
+console.log('https://gitee.com/fujinxiang/fujinxiang/pages');
